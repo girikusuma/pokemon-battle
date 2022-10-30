@@ -5,10 +5,9 @@ import (
 	"strconv"
 )
 
-var anulirName string
-
 func Bonus() ([]PokemonInBattle, string) {
 	var pokemons = make([]PokemonInBattle, 5)
+	var anulirName string
 
 	for i := 0; i < 5; i++ {
 		pokemons[i] = GeneratePokemon()
@@ -29,8 +28,6 @@ func Bonus() ([]PokemonInBattle, string) {
 		}
 	}
 
-	BonusBattle(0, pokemons, anulirName)
-
 	getIndex := 0
 	for index, pokemon := range pokemons {
 		if pokemon.Name == anulirName {
@@ -48,6 +45,9 @@ func Bonus() ([]PokemonInBattle, string) {
 	}
 	pokemons = pokemons[:len(pokemons) - 1]
 
+	BonusBattle(0, pokemons)
+
+
 	fmt.Println("List Pokemon yang akan bertanding setelah anulir:")
 	for i := 0; i < len(pokemons); i++ {
 		fmt.Println(strconv.Itoa(i + 1) + ". " + pokemons[i].Name)
@@ -56,20 +56,20 @@ func Bonus() ([]PokemonInBattle, string) {
 	return pokemons, anulirName
 }
 
-func BonusBattle(index int, pokemons []PokemonInBattle, anulir string) {
+func BonusBattle(index int, pokemons []PokemonInBattle) {
 	indexDef := index + 1
 	if indexDef == len(pokemons) {
 		indexDef = 0
 	}
 
-	for pokemons[index].Hp <= 0 || pokemons[index].Name == anulir{
+	for pokemons[index].Hp <= 0{
 		index += 1
 		if index >= len(pokemons) {
 			index = 0
 		}
 	}
 
-	for index == indexDef || pokemons[indexDef].Hp <= 0 || pokemons[indexDef].Name == anulir{
+	for index == indexDef || pokemons[indexDef].Hp <= 0{
 		indexDef += 1
 		if indexDef >= len(pokemons) {
 			indexDef = 0
@@ -87,7 +87,7 @@ func BonusBattle(index int, pokemons []PokemonInBattle, anulir string) {
 		index = 0
 	}
 
-	BonusBattle(index, pokemons, anulir)
+	BonusBattle(index, pokemons)
 }
 
 func BonusAttack(attacker *PokemonInBattle, defender *PokemonInBattle, pokemons []PokemonInBattle) {
@@ -112,9 +112,8 @@ func BonusDamageTaken(attack int, defender *PokemonInBattle, attacker *PokemonIn
 		fmt.Println("Pokemon " + defender.Name + " menerima serangan sebesar " + strconv.Itoa(damage) + " dari serangan " + attacker.Name)
 		fmt.Println("Sisa HP Pokemon " + defender.Name + " adalah " + strconv.Itoa(defender.Hp))
 		if defender.Hp <= 0 {
-			fmt.Println(anulirName)
 			for i := 0; i < len(pokemons); i++ {
-				if pokemons[i].Name != defender.Name && pokemons[i].Hp > 0 && pokemons[i].Name != anulirName {
+				if pokemons[i].Name != defender.Name && pokemons[i].Hp > 0 {
 					pokemons[i].Point += 1
 				}
 			}
