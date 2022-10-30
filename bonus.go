@@ -5,9 +5,10 @@ import (
 	"strconv"
 )
 
-func Bonus() []PokemonInBattle {
+var anulirName string
+
+func Bonus() ([]PokemonInBattle, string) {
 	var pokemons = make([]PokemonInBattle, 5)
-	var anulir_name string
 
 	for i := 0; i < 5; i++ {
 		pokemons[i] = GeneratePokemon()
@@ -18,11 +19,21 @@ func Bonus() []PokemonInBattle {
 		fmt.Println(strconv.Itoa(index + 1) + ". " + pokemon.Name)
 	}
 	fmt.Print("Masukan nama Pokemon yang akan di anulir: ")
-	fmt.Scanln(&anulir_name)
+	fmt.Scanln(&anulirName)
+
+	for i := 0; i < len(pokemons); i++ {
+		if pokemons[i].Name == anulirName {
+			pokemons[i].Point = 0
+		} else {
+			pokemons[i].Point += 1
+		}
+	}
+
+	BonusBattle(0, pokemons, anulirName)
 
 	getIndex := 0
 	for index, pokemon := range pokemons {
-		if pokemon.Name == anulir_name {
+		if pokemon.Name == anulirName {
 			getIndex = index
 		}
 	}
@@ -40,28 +51,25 @@ func Bonus() []PokemonInBattle {
 	fmt.Println("List Pokemon yang akan bertanding setelah anulir:")
 	for i := 0; i < len(pokemons); i++ {
 		fmt.Println(strconv.Itoa(i + 1) + ". " + pokemons[i].Name)
-		pokemons[i].Point += 1
 	}
-	
-	BonusBattle(0, pokemons)
 
-	return pokemons
+	return pokemons, anulirName
 }
 
-func BonusBattle(index int, pokemons []PokemonInBattle) {
+func BonusBattle(index int, pokemons []PokemonInBattle, anulir string) {
 	indexDef := index + 1
 	if indexDef == len(pokemons) {
 		indexDef = 0
 	}
 
-	for pokemons[index].Hp <= 0 {
+	for pokemons[index].Hp <= 0 || pokemons[index].Name == anulir{
 		index += 1
 		if index >= len(pokemons) {
 			index = 0
 		}
 	}
 
-	for index == indexDef || pokemons[indexDef].Hp <= 0 {
+	for index == indexDef || pokemons[indexDef].Hp <= 0 || pokemons[indexDef].Name == anulir{
 		indexDef += 1
 		if indexDef >= len(pokemons) {
 			indexDef = 0
@@ -79,8 +87,7 @@ func BonusBattle(index int, pokemons []PokemonInBattle) {
 		index = 0
 	}
 
-	BonusBattle(index, pokemons)
-
+	BonusBattle(index, pokemons, anulir)
 }
 
 func BonusAttack(attacker *PokemonInBattle, defender *PokemonInBattle, pokemons []PokemonInBattle) {
@@ -105,8 +112,9 @@ func BonusDamageTaken(attack int, defender *PokemonInBattle, attacker *PokemonIn
 		fmt.Println("Pokemon " + defender.Name + " menerima serangan sebesar " + strconv.Itoa(damage) + " dari serangan " + attacker.Name)
 		fmt.Println("Sisa HP Pokemon " + defender.Name + " adalah " + strconv.Itoa(defender.Hp))
 		if defender.Hp <= 0 {
+			fmt.Println(anulirName)
 			for i := 0; i < len(pokemons); i++ {
-				if pokemons[i].Name != defender.Name && pokemons[i].Hp > 0 {
+				if pokemons[i].Name != defender.Name && pokemons[i].Hp > 0 && pokemons[i].Name != anulirName {
 					pokemons[i].Point += 1
 				}
 			}

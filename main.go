@@ -13,7 +13,7 @@ func main() {
 	fmt.Println("Pokemon yang dimiliki.")
 	fmt.Println("Jawab:")
 
-	stockPokemon := Stories1()
+	stockPokemon, _ := Stories1()
 	fmt.Println("Jumlah stok Pokemon yang dimiliki: " + strconv.Itoa(stockPokemon))
 	fmt.Printf("\n")
 	fmt.Printf("\n")
@@ -75,8 +75,10 @@ func main() {
 	fmt.Println("ingin bisa menganulir salah satu Pokemon di pertandingan tersebut. Pokemon")
 	fmt.Println("tersebut akan dianulir dan urutan pemenang di pertandingan tersebut naik satu")
 	fmt.Println("peringkat menggantikan Pokemon yang dianulir.")
-	result_bonus := Bonus()
+	fmt.Println("Jawab:")
+	result_bonus, anulir := Bonus()
 	for _, pokemon := range result_bonus {
 		fmt.Println("Pokemon " + pokemon.Name + " mendapatkan skor: " + strconv.Itoa(pokemon.Point))
 	}
+	fmt.Println("Pokemon yang di anulir: " + anulir)
 }

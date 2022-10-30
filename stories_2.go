@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	"farmacare/helper"
+	"fmt"
 	"io/ioutil"
 	"math/rand"
 	"net/http"
@@ -42,10 +42,14 @@ var all_pokemon []PokemonUrl = GetAllPokemon()
 
 func GetAllPokemon() []PokemonUrl {
 	response, err := http.Get("https://pokeapi.co/api/v2/pokemon/?offset=0&limit=2000")
-	helper.ErrorPrint(err)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 
 	body, err := ioutil.ReadAll(response.Body)
-	helper.ErrorPrint(err)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 
 	var object Response
 	json.Unmarshal(body, &object)
@@ -55,14 +59,18 @@ func GetAllPokemon() []PokemonUrl {
 
 func GeneratePokemon() PokemonInBattle {
 	rand.Seed(time.Now().UTC().UnixNano())
-	countPokemon := Stories1()
+	countPokemon, _ := Stories1()
 	randNumber := rand.Intn(countPokemon)
 
 	response, err := http.Get(all_pokemon[randNumber].Url)
-	helper.ErrorPrint(err)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 
 	body, err := ioutil.ReadAll(response.Body)
-	helper.ErrorPrint(err)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 
 	var object Pokemon
 	json.Unmarshal(body, &object)
