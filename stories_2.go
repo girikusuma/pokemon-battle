@@ -38,6 +38,13 @@ type PokemonInBattle struct {
 	Point int
 }
 
+type BattlePerPeriod struct {
+	Result []PokemonInBattle
+	Winner PokemonInBattle
+}
+
+var Periods []BattlePerPeriod
+
 var all_pokemon []PokemonUrl = GetAllPokemon()
 
 func GetAllPokemon() []PokemonUrl {
@@ -102,16 +109,52 @@ func GeneratePokemon() PokemonInBattle {
 	return pokemon
 }
 
-func Stories2() []PokemonInBattle {
-	var pokemons = make([]PokemonInBattle, 5)
+func Stories2() {
+	var countPeriod int
+	var battlePerPeriod BattlePerPeriod
+	var winner PokemonInBattle
+
+	fmt.Print("Masukan jumlah periode pertandingan: ")
+	fmt.Scanln(&countPeriod)
+
+	for a := 0; a < countPeriod; a++{
+		var pokemons = make([]PokemonInBattle, 5)
+		for i := 0; i < 5; i++{
+			pokemons[i] = GeneratePokemon()
+		}
 	
-	for i := 0; i < 5; i++{
-		pokemons[i] = GeneratePokemon()
+		Battle(0, pokemons)
+		for _, pokemon := range pokemons {
+			if pokemon.Point == 5 {
+				winner = pokemon
+			}
+		}
+		
+		battlePerPeriod = BattlePerPeriod{
+			Result: pokemons,
+			Winner: winner,
+		}
+
+		for i := 0; i < len(battlePerPeriod.Result) - 1; i++ {
+			for j := 0; j < len(battlePerPeriod.Result) - i - 1; j++ {
+				if battlePerPeriod.Result[j].Point < battlePerPeriod.Result[j + 1].Point {
+					battlePerPeriod.Result[j], battlePerPeriod.Result[j + 1] = battlePerPeriod.Result[j + 1], battlePerPeriod.Result[j]
+				}
+			}
+		}
+		fmt.Println("Hasil pertandingan pada periode " + strconv.Itoa(a + 1) + " berdasarkan Pokemon yang memiliki skor tertinggi:")
+		for _, pokemon := range battlePerPeriod.Result {
+			fmt.Println("Pokemon " + pokemon.Name + " mendapatkan skor: " + strconv.Itoa(pokemon.Point))
+		}
+		Periods = append(Periods, battlePerPeriod)
+
+		Histories = append(Histories, History{
+			Hist: HistTemp,
+		})
+		HistTemp = HistTemp[len(HistTemp):]
+
+		fmt.Printf("\n")
 	}
-
-	Battle(0, pokemons)
-
-	return pokemons
 }
 
 func Battle(index int, pokemons []PokemonInBattle) {
@@ -163,11 +206,11 @@ func Battle(index int, pokemons []PokemonInBattle) {
 
 func Attack(attacker *PokemonInBattle, defender *PokemonInBattle, pokemons []PokemonInBattle) {
 	if attacker.Hp > 0 && defender.Hp > 0 {
-		History = append(History, "Pokemon " + attacker.Name + " menyerang pokemon " + defender.Name + " dengan serangan " + strconv.Itoa(attacker.Attack))
+		HistTemp = append(HistTemp, "Pokemon " + attacker.Name + " menyerang pokemon " + defender.Name + " dengan serangan " + strconv.Itoa(attacker.Attack))
 	}
 	DamageTaken(attacker.Attack, defender, attacker, pokemons)
 	if attacker.Hp > 0 && defender.Hp > 0 {
-		History = append(History, "Pokemon " + defender.Name + " menyerang pokemon " + attacker.Name + " dengan serangan " + strconv.Itoa(defender.Attack))
+		HistTemp = append(HistTemp, "Pokemon " + defender.Name + " menyerang pokemon " + attacker.Name + " dengan serangan " + strconv.Itoa(defender.Attack))
 	}
 	DamageTaken(defender.Attack, attacker, defender, pokemons)
 }
@@ -180,8 +223,8 @@ func DamageTaken(attack int, defender *PokemonInBattle, attacker *PokemonInBattl
 		} else {
 			defender.Hp -= damage
 		}
-		History = append(History, "Pokemon " + defender.Name + " menerima serangan sebesar " + strconv.Itoa(damage) + " dari serangan " + attacker.Name)
-		History = append(History, "Sisa HP Pokemon " + defender.Name + " adalah " + strconv.Itoa(defender.Hp))
+		HistTemp = append(HistTemp, "Pokemon " + defender.Name + " menerima serangan sebesar " + strconv.Itoa(damage) + " dari serangan " + attacker.Name)
+		HistTemp = append(HistTemp, "Sisa HP Pokemon " + defender.Name + " adalah " + strconv.Itoa(defender.Hp))
 		if defender.Hp <= 0 {
 			for i := 0; i < len(pokemons); i++ {
 				if pokemons[i].Name != defender.Name && pokemons[i].Hp > 0 {

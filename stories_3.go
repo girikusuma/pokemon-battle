@@ -5,9 +5,14 @@ import (
 	"strings"
 )
 
-var History []string
+var HistTemp []string
+type History struct {
+	Hist []string
+}
 
-func Stories3(list_pokemon []string, name string, pokemons []PokemonInBattle) int {
+var Histories []History
+
+func Stories3(list_pokemon []string, name string, pokemons []PokemonInBattle, period int) int {
 	var check bool = false
 	var ranking int
 	for _, pokemon := range list_pokemon {
@@ -17,7 +22,7 @@ func Stories3(list_pokemon []string, name string, pokemons []PokemonInBattle) in
 	}
 
 	if check {
-		for _, history := range History{
+		for _, history := range Histories[period].Hist{
 			if strings.Contains(history, name) && !strings.Contains(history, "HP") {
 				fmt.Println(history)
 			}

@@ -6,6 +6,10 @@ import (
 )
 
 func main() {
+	var periodSelect int
+	var list_pokemon []string
+	var selected string
+
 	fmt.Println("Sroties")
 
 	fmt.Println("Sebagai seorang operasional Tim Roket, saya perlu bisa mencari Pokemon dari API")
@@ -25,40 +29,27 @@ func main() {
 	fmt.Println("cepat kalah mendapat skor 1.")
 	fmt.Println("Jawab:")
 
-	result := Stories2()
-	list_pokemon := make([]string, len(result))
-
-	fmt.Println("Nama Pokemon yang bertanding:")
-	for index, pokemon := range result {
-		fmt.Println(strconv.Itoa(index + 1) + ". " + pokemon.Name)
-		list_pokemon[index] = pokemon.Name
-	}
-	for i := 0; i < len(result) - 1; i++ {
-		for j := 0; j < len(result) - i - 1; j++ {
-			if result[j].Point < result[j + 1].Point {
-				result[j], result[j + 1] = result[j + 1], result[j]
-			}
-		}
-	}
-	fmt.Println("Hasil pertandingan berdasarkan Pokemon yang memiliki skor tertinggi:")
-	for _, pokemon := range result {
-		fmt.Println("Pokemon " + pokemon.Name + " mendapatkan skor: " + strconv.Itoa(pokemon.Point))
-	}
+	Stories2()
 	fmt.Printf("\n")
 	fmt.Printf("\n")
 
 	fmt.Println("Sebagai Bos, saya ingin bisa melihat semua data pertandingan yang pernah terjadi")
 	fmt.Println("selama periode tertentu dan urutan peringkat Pokemonnya.")
 	fmt.Println("Jawab:")
+	fmt.Print("Masukan periode pertandingan yang ingin dilihat: ")
+	fmt.Scanln(&periodSelect)
+
+	for _, pokemon := range Periods[periodSelect - 1].Result {
+		list_pokemon = append(list_pokemon, pokemon.Name)
+	}
 	fmt.Println("List Pokemon yang bertanding:")
 	for i, name := range list_pokemon {
 		fmt.Println(strconv.Itoa(i + 1) + ". " + name)
 	}
 	fmt.Print("Masukan nama Pokemon yang ingin dilihat data pertandingannya: ")
-	var selected string
 	fmt.Scanln(&selected)
 	fmt.Println("Hasil Pertandingan:")
-	ranking := Stories3(list_pokemon, selected, result)
+	ranking := Stories3(list_pokemon, selected, Periods[periodSelect - 1].Result, periodSelect - 1)
 	fmt.Println("Urutan peringkat Pokemonnya: " + strconv.Itoa(ranking))
 	fmt.Printf("\n")
 	fmt.Printf("\n")
@@ -66,8 +57,8 @@ func main() {
 	fmt.Println("Sebagai Bos, saya ingin bisa melihat secara keseluruhan urutan Pokemon mana yang")
 	fmt.Println("paling tinggi skornya untuk dipromosikan.")
 	fmt.Println("Jawab:")
-
-	fmt.Println("Pokemon yang dipromosikan adalah: " + result[0].Name)
+	pokemonPromote := Stories4()
+	fmt.Println("Pokemon yang dipromosikan adalah: " + pokemonPromote)
 	fmt.Printf("\n")
 	fmt.Printf("\n")
 
