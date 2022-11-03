@@ -7,8 +7,8 @@ import (
 
 func TestBonusBattle(t *testing.T) {
 	type args struct {
-		index    int
 		pokemons []PokemonInBattle
+		anulirName	string
 	}
 	tests := []struct {
 		name string
@@ -18,37 +18,44 @@ func TestBonusBattle(t *testing.T) {
 		{
 			name: "normal",
 			args: args{
-				index: 0,
 				pokemons: []PokemonInBattle{
 					{
 						Name: "pikachu",
 						Hp: 60,
 						Attack: 76,
 						Defense: 80,
-						Point: 2,
+						Point: 1,
 					},
 					{
 						Name: "pikachu2",
 						Hp: 2,
 						Attack: 1,
 						Defense: 10,
-						Point: 2,
+						Point: 1,
 					},
 					{
 						Name: "pikachu3",
 						Hp: 3,
 						Attack: 1,
 						Defense: 10,
-						Point: 2,
+						Point: 1,
 					},
 					{
 						Name: "pikachu4",
 						Hp: 4,
 						Attack: 1,
 						Defense: 10,
-						Point: 2,
+						Point: 1,
+					},
+					{
+						Name: "pikachu5",
+						Hp: 5,
+						Attack: 1,
+						Defense: 10,
+						Point: 1,
 					},
 				},
+				anulirName: "pikachu5",
 			},
 			result: []PokemonInBattle{
 				{
@@ -84,9 +91,10 @@ func TestBonusBattle(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			BonusBattle(tt.args.index, tt.args.pokemons)
-			if ok := reflect.DeepEqual(tt.result, tt.args.pokemons); !ok {
-				t.Errorf("not equal\ngot: %+v\nwant: %+v", tt.args.pokemons, tt.result)
+			pokemons := DisqualifiedPokemon(tt.args.pokemons, tt.args.anulirName)
+			BonusBattle(0, pokemons)
+			if ok := reflect.DeepEqual(tt.result, pokemons); !ok {
+				t.Errorf("not equal\ngot: %+v\nwant: %+v", pokemons, tt.result)
 			}
 		})
 	}

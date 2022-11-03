@@ -20,6 +20,14 @@ func Bonus() ([]PokemonInBattle, string) {
 	fmt.Print("Masukan nama Pokemon yang akan di anulir: ")
 	fmt.Scanln(&anulirName)
 
+	resultPokemon := DisqualifiedPokemon(pokemons, anulirName)
+
+	BonusBattle(0, resultPokemon)
+
+	return resultPokemon, anulirName
+}
+
+func DisqualifiedPokemon(pokemons []PokemonInBattle, anulirName string) []PokemonInBattle {
 	for i := 0; i < len(pokemons); i++ {
 		if pokemons[i].Name == anulirName {
 			pokemons[i].Point = 0
@@ -45,15 +53,12 @@ func Bonus() ([]PokemonInBattle, string) {
 	}
 	pokemons = pokemons[:len(pokemons) - 1]
 
-	BonusBattle(0, pokemons)
-
-
 	fmt.Println("List Pokemon yang akan bertanding setelah anulir:")
 	for i := 0; i < len(pokemons); i++ {
 		fmt.Println(strconv.Itoa(i + 1) + ". " + pokemons[i].Name)
 	}
 
-	return pokemons, anulirName
+	return pokemons
 }
 
 func BonusBattle(index int, pokemons []PokemonInBattle) {
